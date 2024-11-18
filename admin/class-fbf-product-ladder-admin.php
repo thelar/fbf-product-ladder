@@ -100,4 +100,17 @@ class Fbf_Product_Ladder_Admin {
 
 	}
 
+    /**
+     * Add ACF options page
+     */
+    public function add_options_page()
+    {
+        if (function_exists('acf_add_options_page')) {
+            $child = acf_add_options_sub_page([
+                'page_title' => 'Test Product Ladder Options',
+                'menu_title' => 'Test Product Ladder Options',
+                'parent_slug' => 'theme-general-settings'
+            ]);
+        }
+    }
 }
