@@ -34,27 +34,19 @@
 		if (typeof acf == 'undefined'){
 			return;
 		}
-		console.log('acf exists here');
+		let brands_field_id = 'field_6733716272bd9';
+		let models_field_id = 'field_673371aa72bda';
 
-		// extend the acf.ajax object
-		// you should probably rename this var
-		var myACFextension = acf.ajax.extend({
-			events: {
-				// this data-key must match the field key for the state field on the post page where
-				// you want to dynamically load the cities when the state is changed
-				'change [data-key="field_579376f522130"] select': '_state_change',
-				// this entry is to cause the city field to be updated when the page is loaded
-				'ready [data-key="field_579376f522130"] select': '_state_change',
-			},
-
-			// this is our function that will perform the
-			// ajax request when the state value is changed
-			_state_change: function(e){
-				console.log('state change');
-			},
+		acf.add_filter('select2_ajax_data', function( data, args, $input, field, instance ){
+			// do something to data
+			if(data.field_key===models_field_id){
+				let brands_field = acf.getField(brands_field_id);
+				console.log(brands_field);
+				console.log(brands_field.val());
+				data.brand_id = brands_field.val();
+			}
+			// return
+			return data;
 		});
-
-		// triger the ready action on page load
-		$('[data-key="field_579376f522130"] select').trigger('ready');
 	});
 })( jQuery );

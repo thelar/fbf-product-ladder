@@ -113,4 +113,118 @@ class Fbf_Product_Ladder_Admin {
             ]);
         }
     }
+
+public function model_taxonomy_filter($args, $field, $post_id)
+{
+    $brand_id = filter_var($_POST['brand_id'], FILTER_SANITIZE_STRING);
+    if(!empty($brand_id)){
+        $product_args = [
+            'post_type' => 'product',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'fields' => 'ids',
+            'tax_query' => [
+                [
+                    'taxonomy' => 'pa_brand-name',
+                    'field' => 'term_id',
+                    'terms' => $brand_id,
+                ]
+            ],
+        ];
+        $product_ids = get_posts($product_args);
+        if(!empty($product_ids)){
+            $args['object_ids'] = $product_ids; // Array to pass here is all the product ids of Brand
+        }
+    }
+    return $args;
+}
+
+    /**
+     * Define fields
+     */
+    public function add_acf_fields()
+    {
+        if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+            return;
+        }
+
+        acf_add_local_field_group( array(
+            'key' => 'group_673371613b006',
+            'title' => 'Test Brand Model',
+            'fields' => array(
+                array(
+                    'key' => 'field_6733716272bd9',
+                    'label' => 'Brand',
+                    'name' => 'brand',
+                    'aria-label' => '',
+                    'type' => 'taxonomy',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ),
+                    'taxonomy' => 'pa_brand-name',
+                    'add_term' => 0,
+                    'save_terms' => 0,
+                    'load_terms' => 0,
+                    'return_format' => 'id',
+                    'field_type' => 'select',
+                    'allow_null' => 0,
+                    'allow_in_bindings' => 0,
+                    'bidirectional' => 0,
+                    'multiple' => 0,
+                    'bidirectional_target' => array(
+                    ),
+                ),
+                array(
+                    'key' => 'field_673371aa72bda',
+                    'label' => 'Model',
+                    'name' => 'model',
+                    'aria-label' => '',
+                    'type' => 'taxonomy',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ),
+                    'taxonomy' => 'pa_model-name',
+                    'add_term' => 0,
+                    'save_terms' => 0,
+                    'load_terms' => 0,
+                    'return_format' => 'id',
+                    'field_type' => 'select',
+                    'allow_null' => 0,
+                    'allow_in_bindings' => 0,
+                    'bidirectional' => 0,
+                    'multiple' => 0,
+                    'bidirectional_target' => array(
+                    ),
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'options_page',
+                        'operator' => '==',
+                        'value' => 'acf-options-test-product-ladder-options',
+                    ),
+                ),
+            ),
+            'menu_order' => 0,
+            'position' => 'normal',
+            'style' => 'default',
+            'label_placement' => 'top',
+            'instruction_placement' => 'label',
+            'hide_on_screen' => '',
+            'active' => true,
+            'description' => '',
+            'show_in_rest' => 0,
+        ) );
+    }
 }
