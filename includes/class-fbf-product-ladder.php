@@ -158,7 +158,22 @@ class Fbf_Product_Ladder {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_options_page');
         $this->loader->add_action('acf/include_fields', $plugin_admin, 'add_acf_fields');
-        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673371aa72bda', $plugin_admin, 'model_taxonomy_filter', 10, 3);
+
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4407f6b9', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Budget
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4ba7f6be', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Mid range
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce5217f6c3', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Premium
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce5977f6c6', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Premium
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4a21a7f00', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // Non AT/MT Budget
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c34d49a8', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // Non AT/MT Mid range
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c7cd49aa', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // Non AT/MT Premium
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4cf1f4157', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // Non AT/MT Premium
+
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4867f6ba', $plugin_admin, 'model_taxonomy_filter', 10, 3); // AT/MT Budget
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4ba7f6bf', $plugin_admin, 'model_taxonomy_filter', 10, 3); // AT/MT Mid range
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce5217f6c4', $plugin_admin, 'model_taxonomy_filter', 10, 3); // AT/MT Premium
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4a53a7f01', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Budget
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c54d49a9', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Mid range
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c95d49ab', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Premium
 
 	}
 
