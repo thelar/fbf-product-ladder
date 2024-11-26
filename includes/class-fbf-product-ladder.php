@@ -233,4 +233,10 @@ class Fbf_Product_Ladder {
 		return $this->version;
 	}
 
+    public static function get_options()
+    {
+        $options = get_field('field_673e42017a113', 'options');
+        return $options;
+    }
+
 }

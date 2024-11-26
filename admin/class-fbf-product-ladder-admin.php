@@ -920,7 +920,7 @@ class Fbf_Product_Ladder_Admin {
                                 ),
                                 array(
                                     'key' => 'field_673e4a53a7f01',
-                                    'label' => 'Model',
+                                    'label' => 'Model(s)',
                                     'name' => 'model',
                                     'aria-label' => '',
                                     'type' => 'taxonomy',
@@ -1000,7 +1000,7 @@ class Fbf_Product_Ladder_Admin {
                                 ),
                                 array(
                                     'key' => 'field_673e4c54d49a9',
-                                    'label' => 'Model',
+                                    'label' => 'Model(s)',
                                     'name' => 'model',
                                     'aria-label' => '',
                                     'type' => 'taxonomy',
@@ -1080,7 +1080,7 @@ class Fbf_Product_Ladder_Admin {
                                 ),
                                 array(
                                     'key' => 'field_673e4c95d49ab',
-                                    'label' => 'Model',
+                                    'label' => 'Model(s)',
                                     'name' => 'model',
                                     'aria-label' => '',
                                     'type' => 'taxonomy',
