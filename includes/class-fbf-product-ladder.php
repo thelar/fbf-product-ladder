@@ -57,6 +57,12 @@ class Fbf_Product_Ladder {
 	 */
 	protected $version;
 
+    /**
+     * Define the fields
+     */
+    const FBF_PL_AT_MT_FIELD = 'field_673e42017a113';
+    const FBF_PL_NON_AT_MT_FIELD = 'field_673e48ad67d1d';
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -233,10 +239,138 @@ class Fbf_Product_Ladder {
 		return $this->version;
 	}
 
-    public static function get_options()
+    /**
+     * Get the Tyre ladder options
+     *
+     * @param $is_at_mt
+     * @return false|mixed
+     */
+    private static function get_options($is_at_mt)
     {
-        $options = get_field('field_673e42017a113', 'options');
-        return $options;
+        if($is_at_mt){
+            $field = self::FBF_PL_AT_MT_FIELD;
+        }else{
+            $field = self::FBF_PL_NON_AT_MT_FIELD;
+        }
+        return get_field($field, 'options');
+    }
+
+    /**
+     * Gets the ID of the Premium/Mid-range/Budget position
+     *
+     * @param $which
+     * @param $is_at_mt
+     * @param $ids
+     * @return false|int|WP_Post
+     */
+    public static function get_id($which, $is_at_mt, $ids)
+    {
+        if($ladder_options = self::get_options($is_at_mt)[$which]){
+            // Loop through the rows and perform a get_posts() to find any products that match Brand/Model in $ids
+            foreach($ladder_options as $row){
+                $args = [
+                    'post_type' => 'product',
+                    'post__in' => $ids,
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                    'fields' => 'ids',
+                ];
+                $tax_query = [];
+                $brand = $row['brand'];
+                $tax_query[] = [
+                    'taxonomy' => 'pa_brand-name',
+                    'field' => 'term_id',
+                    'terms' => $brand->term_id,
+                ];
+                if(!empty($row['model'])){
+                    $model_ids = [];
+                    foreach($row['model'] as $model){
+                        $model_ids[] = $model->term_id;
+                    }
+                    $tax_query[] = [
+                        'taxonomy' => 'pa_model-name',
+                        'field' => 'term_id',
+                        'terms' => $model_ids,
+                    ];
+                }
+                $tax_query[] = [
+                    'taxonomy' => 'product_cat',
+                    'field' => 'slug',
+                    'terms' => 'package',
+                    'operator' => 'NOT IN'
+                ];
+                $args['tax_query'] = $tax_query;
+                $args['tax_query']['relation'] = 'AND';
+
+                // Sort by popularity
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'desc';
+                $args['meta_key'] = 'total_sales';
+
+                $product_ids = get_posts($args);
+
+                if(!empty($product_ids)){
+                    return $product_ids[0];
+                }
+            }
+            return false;
+        }else{
+            return false;
+        }
+    }
+
+    public static function get_brand_order($is_at_mt, $ids, $exclude_list)
+    {
+        if($ladder_options = self::get_options($is_at_mt)['brand_order']){
+            $brand_order = [];
+            foreach($ladder_options as $brand){
+                $brand_term_id = $brand['brand']->term_id;
+                $positions = $brand['positions'];
+                $args = [
+                    'post_type' => 'product',
+                    'post__in' => $ids,
+                    'posts_per_page' => $positions,
+                    'post_status' => 'publish',
+                    'fields' => 'ids',
+                ];
+                if(!empty($exclude_list)){
+                    $args['post__not_in'] = $exclude_list;
+                }
+                $tax_query = [];
+                $tax_query[] = [
+                    'taxonomy' => 'pa_brand-name',
+                    'field' => 'term_id',
+                    'terms' => $brand_term_id,
+                ];
+                $tax_query[] = [
+                    'taxonomy' => 'product_cat',
+                    'field' => 'slug',
+                    'terms' => 'package',
+                    'operator' => 'NOT IN'
+                ];
+                $args['tax_query'] = $tax_query;
+                $args['tax_query']['relation'] = 'AND';
+
+                // Sort by popularity
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'desc';
+                $args['meta_key'] = 'total_sales';
+
+                $brand_ids = get_posts($args);
+                if(!empty($brand_ids)){
+                    foreach($brand_ids as $a){
+                        $brand_order[] = $a;
+                    }
+                }
+            }
+            if(!empty($brand_order)){
+                return $brand_order;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
 }
