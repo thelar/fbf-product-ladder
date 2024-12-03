@@ -107,8 +107,8 @@ class Fbf_Product_Ladder_Admin {
     {
         if (function_exists('acf_add_options_page')) {
             $child = acf_add_options_sub_page([
-                'page_title' => 'Test Product Ladder Options',
-                'menu_title' => 'Test Product Ladder Options',
+                'page_title' => 'New Product Ladder Options',
+                'menu_title' => 'New Product Ladder Options',
                 'parent_slug' => 'theme-general-settings'
             ]);
         }
