@@ -1192,7 +1192,7 @@ class Fbf_Product_Ladder_Admin {
                     array(
                         'param' => 'options_page',
                         'operator' => '==',
-                        'value' => 'acf-options-test-product-ladder-options',
+                        'value' => 'acf-options-new-product-ladder-options',
                     ),
                 ),
             ),
