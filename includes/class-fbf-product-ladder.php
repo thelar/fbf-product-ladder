@@ -333,9 +333,10 @@ class Fbf_Product_Ladder {
                     'post_status' => 'publish',
                     'fields' => 'ids',
                 ];
-                if(!empty($exclude_list)){
+                // As per https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters you cannot combine post__in and post__not_in in same query
+                /*if(!empty($exclude_list)){
                     $args['post__not_in'] = $exclude_list;
-                }
+                }*/
                 $tax_query = [];
                 $tax_query[] = [
                     'taxonomy' => 'pa_brand-name',
@@ -357,6 +358,16 @@ class Fbf_Product_Ladder {
                 $args['meta_key'] = 'total_sales';
 
                 $brand_ids = get_posts($args);
+
+                // Remove items in exclude list
+                if(!empty($exclude_list)){
+                    foreach($exclude_list as $exclude_id){
+                        if(in_array($exclude_id, $brand_ids)){
+                            unset($brand_ids[array_search($exclude_id, $brand_ids)]);
+                        }
+                    }
+                }
+
                 if(!empty($brand_ids)){
                     foreach($brand_ids as $a){
                         $brand_order[] = $a;
