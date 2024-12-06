@@ -34,15 +34,32 @@
 		if (typeof acf == 'undefined'){
 			return;
 		}
-		let brands_field_id = 'field_6733716272bd9';
-		let models_field_id = 'field_673371aa72bda';
+		let budget_models_at_mt_field_id = 'field_673ce4867f6ba';
+		let mid_range_models_at_mt_field_id = 'field_673ce4ba7f6bf';
+		let premium_models_at_mt_field_id = 'field_673ce5217f6c4';
+		let budget_models_non_at_mt_field_id = 'field_673e4a53a7f01';
+		let mid_range_models_non_at_mt_field_id = 'field_673e4c54d49a9';
+		let premium_models_non_at_mt_field_id = 'field_673e4c95d49ab';
 
 		acf.add_filter('select2_ajax_data', function( data, args, $input, field, instance ){
+			console.log(data.field_key);
+			console.log('$input');
+			console.log($input);
 			// do something to data
-			if(data.field_key===models_field_id){
-				let brands_field = acf.getField(brands_field_id);
+			if(
+				data.field_key===budget_models_at_mt_field_id ||
+				data.field_key===mid_range_models_at_mt_field_id ||
+				data.field_key===premium_models_at_mt_field_id ||
+				data.field_key===budget_models_non_at_mt_field_id ||
+				data.field_key===mid_range_models_non_at_mt_field_id ||
+				data.field_key===premium_models_non_at_mt_field_id
+			){
+				let brands_field = $input.parents('.acf-row').find('.acf-taxonomy-field[data-taxonomy=pa_brand-name] select');
+				//let brands_field = acf.getField(brands_field_id);
+				/*console.log(brands_field);
+				console.log(brands_field.val());*/
+				console.log('brand_field');
 				console.log(brands_field);
-				console.log(brands_field.val());
 				data.brand_id = brands_field.val();
 			}
 			// return
