@@ -128,6 +128,11 @@ class Fbf_Product_Ladder {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-fbf-product-ladder-public.php';
 
+        /**
+         * The class responsible for admin ajax functions.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-fbf-product-ladder-admin-ajax.php';
+
 		$this->loader = new Fbf_Product_Ladder_Loader();
 
 	}
@@ -159,12 +164,14 @@ class Fbf_Product_Ladder {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Fbf_Product_Ladder_Admin( $this->get_plugin_name(), $this->get_version() );
+        $plugin_admin_ajax = new Fbf_Product_Ladder_Admin_Ajax($this->get_plugin_name(), $this->get_version());
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_options_page');
         $this->loader->add_action('acf/include_fields', $plugin_admin, 'add_acf_fields');
 
+        // Tyres
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4407f6b9', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Budget
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce4ba7f6be', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Mid range
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673ce5217f6c3', $plugin_admin, 'tyre_product_cat_filter', 10, 3); // AT/MT Premium
@@ -180,6 +187,23 @@ class Fbf_Product_Ladder {
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4a53a7f01', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Budget
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c54d49a9', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Mid range
         $this->loader->add_filter('acf/fields/taxonomy/query/key=field_673e4c95d49ab', $plugin_admin, 'model_taxonomy_filter', 10, 3); // Non AT/MT Premium
+
+        // Wheels
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_6877c11f504b0', $plugin_admin, 'brand_taxonomy_filter', 10, 3); // Alloy/Steel
+        $this->loader->add_filter('acf/fields/taxonomy/query/key=field_6877c27a504b3', $plugin_admin, 'brand_taxonomy_filter', 10, 3); // Alloy only
+
+        $this->loader->add_filter('acf/load_field/key=field_6878cd7c37435', $plugin_admin, 'manufacturer_filter', 10, 1);
+        $this->loader->add_filter('acf/load_field/key=field_6878cdef98ede', $plugin_admin, 'chassis_filter', 10, 1);
+
+        $this->loader->add_filter('acf/load_field/key=field_6878d159bea8a', $plugin_admin, 'brand_filter', 10, 1);
+        $this->loader->add_filter('acf/load_field/key=field_6878d347bea8c', $plugin_admin, 'product_filter', 10, 1);
+
+
+        // Ajax
+        $this->loader->add_action( 'wp_ajax_fbf_product_ladder_populate_chassis', $plugin_admin_ajax, 'fbf_product_ladder_populate_chassis' );
+        $this->loader->add_action( 'wp_ajax_nopriv_fbf_product_ladder_populate_chassis', $plugin_admin_ajax, 'fbf_product_ladder_populate_chassis' );
+        $this->loader->add_action( 'wp_ajax_fbf_product_ladder_populate_order', $plugin_admin_ajax, 'fbf_product_ladder_populate_order' );
+        $this->loader->add_action( 'wp_ajax_nopriv_fbf_product_ladder_populate_order', $plugin_admin_ajax, 'fbf_product_ladder_populate_order' );
 
 	}
 
