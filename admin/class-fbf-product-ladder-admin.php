@@ -216,7 +216,7 @@ class Fbf_Product_Ladder_Admin {
     {
         global $wpdb;
         $manufacturer_table = $wpdb->prefix . 'fbf_vehicle_manufacturers';
-        $q = $wpdb->prepare("SELECT * FROM {$manufacturer_table} WHERE enabled = TRUE");
+        $q = "SELECT * FROM {$manufacturer_table} WHERE enabled = TRUE";
         $r = $wpdb->get_results($q);
         if($r){
             foreach($r as $k => $v){
