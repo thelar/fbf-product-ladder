@@ -127,7 +127,7 @@ class Fbf_Product_Ladder_Admin {
 
     public function model_taxonomy_filter($args, $field, $post_id)
     {
-        $brand_id = filter_var($_POST['brand_id'], FILTER_SANITIZE_STRING);
+        $brand_id = strip_tags($_POST['brand_id']);
         if(!empty($brand_id)){
             $product_args = [
                 'post_type' => 'product',
@@ -232,7 +232,7 @@ class Fbf_Product_Ladder_Admin {
         if(!isset($_POST['manufacturer_id']) || !is_numeric($_POST['manufacturer_id'])){
             return $field;
         }
-        $manufacturer_id = filter_var($_POST['manufacturer_id'], FILTER_SANITIZE_STRING);
+        $manufacturer_id = strip_tags($_POST['manufacturer_id']);
         if(is_plugin_active('fbf-wheel-search/fbf-wheel-search.php')) {
             require_once plugin_dir_path(WP_PLUGIN_DIR . '/fbf-wheel-search/fbf-wheel-search.php') . 'includes/class-fbf-wheel-search-boughto-api.php';
             $api = new \Fbf_Wheel_Search_Boughto_Api('fbf_wheel_search', 'fbf-wheel-search');
@@ -277,7 +277,7 @@ class Fbf_Product_Ladder_Admin {
         if(!isset($_POST['chassis_id']) || !is_numeric($_POST['chassis_id'])){
             return $field;
         }
-        $chassis_id = filter_var($_POST['chassis_id'], FILTER_SANITIZE_STRING);
+        $chassis_id = strip_tags($_POST['chassis_id']);
         global $wpdb;
         $chassis_wheel_table = $wpdb->prefix . 'fbf_chassis_wheel';
         $q = $wpdb->prepare("SELECT data FROM {$chassis_wheel_table} WHERE chassis_id = %s", $chassis_id);
@@ -303,7 +303,7 @@ class Fbf_Product_Ladder_Admin {
         if(!isset($_POST['chassis_id']) || !is_numeric($_POST['chassis_id'])){
             return $field;
         }
-        $chassis_id = filter_var($_POST['chassis_id'], FILTER_SANITIZE_STRING);
+        $chassis_id = strip_tags($_POST['chassis_id']);
         global $wpdb;
         $chassis_wheel_table = $wpdb->prefix . 'fbf_chassis_wheel';
         $q = $wpdb->prepare("SELECT data FROM {$chassis_wheel_table} WHERE chassis_id = %s", $chassis_id);

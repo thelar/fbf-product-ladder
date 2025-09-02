@@ -35,7 +35,7 @@ class Fbf_Product_Ladder_Admin_Ajax
     public function fbf_product_ladder_populate_chassis()
     {
         check_ajax_referer($this->plugin_name, 'ajax_nonce');
-        $index = filter_var($_POST['row'], FILTER_SANITIZE_STRING);
+        $index = strip_tags($_POST['row']);
         $status = 'success';
         $resp = [];
 
@@ -85,33 +85,39 @@ class Fbf_Product_Ladder_Admin_Ajax
     public function fbf_product_ladder_populate_order()
     {
         check_ajax_referer($this->plugin_name, 'ajax_nonce');
-        $order_index = filter_var($_POST['order_index'], FILTER_SANITIZE_STRING);
-        $chassis_index = filter_var($_POST['chassis_index'], FILTER_SANITIZE_STRING);
+        $order_index = strip_tags($_POST['order_index']);
+        $chassis_index = strip_tags($_POST['chassis_index']);
         $status = 'success';
         $resp = [];
 
         $values = get_field('field_6878cce937433', 'options');
 
         $chassis_order = $values['chassis'][$chassis_index]['order'];
-        $position = $chassis_order[$order_index];
 
-        if($position['brand_or_product']==='product'){
-            $product_id = $position['sku'];
-            $product = wc_get_product($product_id);
-            $order_data = [
-                'type' => 'product',
-                'name' => sprintf('%s (%s)', $product->get_title(), $product->get_sku()),
-                'id' => $product_id,
-            ];
-            $status = 'success';
-        }else if($position['brand_or_product']==='brand'){
-            $order_data = [
-                'type' => 'brand',
-                'id' => $position['brand'],
-                'name' => get_term_by('id', $position['brand'], 'pa_brand-name')->name,
-            ];
-            $status = 'success';
-        }
+		if(isset($chassis_order[$order_index])){
+			$position = $chassis_order[$order_index];
+
+			if($position['brand_or_product']==='product'){
+				$product_id = $position['sku'];
+				$product = wc_get_product($product_id);
+				$order_data = [
+					'type' => 'product',
+					'name' => sprintf('%s (%s)', $product->get_title(), $product->get_sku()),
+					'id' => $product_id,
+				];
+				$status = 'success';
+			}else if($position['brand_or_product']==='brand'){
+				$order_data = [
+					'type' => 'brand',
+					'id' => $position['brand'],
+					'name' => get_term_by('id', $position['brand'], 'pa_brand-name')->name,
+				];
+				$status = 'success';
+			}
+		}else{
+			$order_data = null;
+		}
+
 
         $resp['data'] = $order_data;
         $resp['status'] = $status;
