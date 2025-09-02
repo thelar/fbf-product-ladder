@@ -40,32 +40,36 @@ class Fbf_Product_Ladder_Admin_Ajax
         $resp = [];
 
         $values = get_field('field_6878cce937433', 'options');
-        $chassis_id = $values['chassis'][$index]['chassis'];
 
-        if($chassis_id){
-            global $wpdb;
-            $chassis_table = $wpdb->prefix . 'fbf_chassis_wheel';
-            $q = $wpdb->prepare("SELECT name FROM {$chassis_table} WHERE chassis_id = %s", $chassis_id);
-            $r = $wpdb->get_col($q);
-            if($r){
-                $name = $r[0];
-            }else if(is_plugin_active('fbf-wheel-search/fbf-wheel-search.php')){
-                require_once plugin_dir_path(WP_PLUGIN_DIR . '/fbf-wheel-search/fbf-wheel-search.php') . 'includes/class-fbf-wheel-search-boughto-api.php';
-                $api = new \Fbf_Wheel_Search_Boughto_Api('fbf_wheel_search', 'fbf-wheel-search');
-                $chassis_data = $api->get_chassis_detail($chassis_id);
-                if(!empty($chassis_data)){
-                    $manufacturer_id = $chassis_data['manufacturer']['id'];
-                    $chassis = $api->get_chasis($manufacturer_id);
-                    $my_chassis = $chassis[array_search($chassis_id, array_column(array_column($chassis, 'chassis'), 'id'))];
-                    if(!empty($my_chassis)){
-                        $ds = DateTime::createFromFormat('Y-m-d', $my_chassis['generation']['start_date']);
-                        $de = DateTime::createFromFormat('Y', $my_chassis['generation']['end_date']);
+		if(isset($values['chassis'][$index])){
+			$chassis_id = $values['chassis'][$index]['chassis'];
 
-                        $name = str_replace(' All Engines', '', $my_chassis['chassis']['display_name']); // Remove ' All Engines' from string
-                    }
-                }
-            }
-        }
+			if($chassis_id){
+				global $wpdb;
+				$chassis_table = $wpdb->prefix . 'fbf_chassis_wheel';
+				$q = $wpdb->prepare("SELECT name FROM {$chassis_table} WHERE chassis_id = %s", $chassis_id);
+				$r = $wpdb->get_col($q);
+				if($r){
+					$name = $r[0];
+				}else if(is_plugin_active('fbf-wheel-search/fbf-wheel-search.php')){
+					require_once plugin_dir_path(WP_PLUGIN_DIR . '/fbf-wheel-search/fbf-wheel-search.php') . 'includes/class-fbf-wheel-search-boughto-api.php';
+					$api = new \Fbf_Wheel_Search_Boughto_Api('fbf_wheel_search', 'fbf-wheel-search');
+					$chassis_data = $api->get_chassis_detail($chassis_id);
+					if(!empty($chassis_data)){
+						$manufacturer_id = $chassis_data['manufacturer']['id'];
+						$chassis = $api->get_chasis($manufacturer_id);
+						$my_chassis = $chassis[array_search($chassis_id, array_column(array_column($chassis, 'chassis'), 'id'))];
+						if(!empty($my_chassis)){
+							$ds = DateTime::createFromFormat('Y-m-d', $my_chassis['generation']['start_date']);
+							$de = DateTime::createFromFormat('Y', $my_chassis['generation']['end_date']);
+
+							$name = str_replace(' All Engines', '', $my_chassis['chassis']['display_name']); // Remove ' All Engines' from string
+						}
+					}
+				}
+			}
+		}
+
 
         if(isset($name) && isset($chassis_id)){
             $resp['name'] = $name;
@@ -92,31 +96,36 @@ class Fbf_Product_Ladder_Admin_Ajax
 
         $values = get_field('field_6878cce937433', 'options');
 
-        $chassis_order = $values['chassis'][$chassis_index]['order'];
+		if(isset($values['chassis'][$chassis_index])){
+			$chassis_order = $values['chassis'][$chassis_index]['order'];
 
-		if(isset($chassis_order[$order_index])){
-			$position = $chassis_order[$order_index];
+			if(isset($chassis_order[$order_index])){
+				$position = $chassis_order[$order_index];
 
-			if($position['brand_or_product']==='product'){
-				$product_id = $position['sku'];
-				$product = wc_get_product($product_id);
-				$order_data = [
-					'type' => 'product',
-					'name' => sprintf('%s (%s)', $product->get_title(), $product->get_sku()),
-					'id' => $product_id,
-				];
-				$status = 'success';
-			}else if($position['brand_or_product']==='brand'){
-				$order_data = [
-					'type' => 'brand',
-					'id' => $position['brand'],
-					'name' => get_term_by('id', $position['brand'], 'pa_brand-name')->name,
-				];
-				$status = 'success';
+				if($position['brand_or_product']==='product'){
+					$product_id = $position['sku'];
+					$product = wc_get_product($product_id);
+					$order_data = [
+						'type' => 'product',
+						'name' => sprintf('%s (%s)', $product->get_title(), $product->get_sku()),
+						'id' => $product_id,
+					];
+					$status = 'success';
+				}else if($position['brand_or_product']==='brand'){
+					$order_data = [
+						'type' => 'brand',
+						'id' => $position['brand'],
+						'name' => get_term_by('id', $position['brand'], 'pa_brand-name')->name,
+					];
+					$status = 'success';
+				}
+			}else{
+				$order_data = null;
 			}
 		}else{
 			$order_data = null;
 		}
+
 
 
         $resp['data'] = $order_data;
