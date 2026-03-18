@@ -320,7 +320,7 @@ class Fbf_Product_Ladder {
                 $tax_query[] = [
                     'taxonomy' => 'product_cat',
                     'field' => 'slug',
-                    'terms' => 'package',
+                    'terms' => ['package', 'hs-trailer-tyre-and-wheel', 'atv-trailer-tyre-and-wheel', 'lg-tyre-and-wheel'],
                     'operator' => 'NOT IN'
                 ];
                 $args['tax_query'] = $tax_query;
@@ -370,7 +370,7 @@ class Fbf_Product_Ladder {
                 $tax_query[] = [
                     'taxonomy' => 'product_cat',
                     'field' => 'slug',
-                    'terms' => 'package',
+                    'terms' => ['package', 'hs-trailer-tyre-and-wheel', 'atv-trailer-tyre-and-wheel', 'lg-tyre-and-wheel'],
                     'operator' => 'NOT IN'
                 ];
                 $args['tax_query'] = $tax_query;
